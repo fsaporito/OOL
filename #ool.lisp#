@@ -1,0 +1,16 @@
+;;;; Surname Name ID
+
+
+;;;; Hash Table Used To Store Classes Informations ;;;;
+(defparameter *classes-specs* (make-hash-table))
+
+
+;;;; Function Used To 
+(defun add-class-spec (name class-spec)
+  (setf (gethash name *classes-specs*) class-spec))
+
+(defun get-class-spec (name)
+  (gethash name *classes-specs*))
+
+(define-class (class-name parent slot-value)
+	
