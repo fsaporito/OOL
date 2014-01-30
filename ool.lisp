@@ -34,10 +34,10 @@
   (if (null slot-values) ;; slot-values Is Empty, Return True
       T
       (if (symbolp (first slot-values)) ;; The First Element Must Be A Symbol
-	  (if (equal (car (second slot-values)) 'method )
+	  (if (equal (car (second slot-values)) (quote method))
 	      ((method-process (first slot-values) (second slot-values))
-	       (check-slot (rest (rest slot-values)))
-	      (check-slot (rest (rest slot-values))) ;; Check From Third Element
+	       (check-slot (rest (rest slot-values))))
+	      (check-slot (rest (rest slot-values)))) ;; Check From Third Element
 	  Nil)))
 
 
