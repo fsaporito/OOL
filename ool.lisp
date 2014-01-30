@@ -107,9 +107,10 @@
 ;;;; Rewrite Method 
 ;;;; This Function Add The Argument This To The Method
 (defun rewrite-method (method-spec)
+  (princ "Now In Rewriting")
   (list 'lamba (append (list 'this)
-		       (first method-spec))
-	(list 'progn (rest method-spec)))) 
+		       (second method-spec))
+	(list 'progn (rest (rest method-spec)))))
 
 
 
@@ -118,13 +119,17 @@
 ;;;; Function Used To Process Methods, Rewriting Them To
 ;;;; Lisp Functions 
 (defun method-process (method-name method-spec)
+  (princ "Processing the method")
   (setf (fdefinition method-name) 
 	(lambda (this &rest args)
-	  (apply (get-slot this 
+	  (apply (get-slot 'this 
 			   method-name)
-		 (append (list this)
-			 args))))				    
-  (eval (rewrite-method method-spec)))
+		 (append (list 'this)
+			 args))))	
+  (princ "  Function Created, Now Rewriting!!!")
+  (eval (rewrite-method method-spec))
+  (princ "done"))
+
 
 
 
@@ -133,19 +138,16 @@
 (defun slot-values-proc (slot-values)
   (if (null slot-values)
       Nil
-      (if (not (atom (second slot-values)))
-	  (if (equal (car (second slot-values)) 
-		     'method)
-	      (append (method-process (first slot-values) 
-				      (second slot-values))
-		      (slot-values-proc (rest (rest slot-values))))
-	      (append (list (first slot-values) 
-			    (second slot-values))
-		      (slot-values-proc (rest (rest slot-values)))))
-	  (append (list (first slot-values)
+      (if (and (not (atom (second slot-values)))
+	       (equal (car (second slot-values)) 
+		     'method))
+	  (append (method-process (first slot-values) 
+				  (second slot-values))
+		  (slot-values-proc (rest (rest slot-values))))
+	  (append (list (first slot-values) 
 			(second slot-values))
 		  (slot-values-proc (rest (rest slot-values)))))))
-
+	  
 
 
 
@@ -171,9 +173,11 @@
 (defun new (class-name &rest slot-values)
   (if (symbolp class-name) 
       (if (get-class-spec class-name)
-	  (if (check-slot slot-values)
-	      (append (list class-name) 
-		      (slot-values-proc slot-values))
+	  (if (evenp (length slot-values))
+	      (if (check-slot slot-values)
+		  (append (list class-name) 
+			  (slot-values-proc slot-values))
+		  (error "Wrong Slot Values"))
 	      (error "Wrong Slot Values"))
 	  (error "Class Not Defined !!!"))
       (error "Wrong Class Name")))

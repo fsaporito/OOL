@@ -12,12 +12,12 @@
 (define-class 'student 'person 
   'name "Eva Lu Ator"
   'university "Berkeley"
-;  'talk '(method ()
-;	  (princ "My name is ")
-;	  (princ (get-slot this 'name))
-;	  (terpri)
-;	  (princ "My age is ")
-;	  (princ (get-slot this 'age)))
+  'talk '(method ()
+	  (princ "My name is ")
+	  (princ (get-slot this 'name))
+	  (terpri)
+	  (princ "My age is ")
+	  (princ (get-slot this 'age)))
 
 )
 
