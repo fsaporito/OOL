@@ -83,7 +83,7 @@
 (defun check-slot (slot-values)
   (if (null slot-values) ;; slot-values Is Empty, Return True
       T
-      (if (evenp (length L))
+      (if (evenp (length slot-values))
 	  (if (symbolp (first slot-values)) ;; The First Element Must Be A Symbol
 	      (check-slot (rest (rest slot-values))) ;; Check From Third Element
 	      Nil)
