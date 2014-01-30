@@ -118,14 +118,12 @@
 ;;;; Function Used To Process Methods, Rewriting Them To
 ;;;; Lisp Functions 
 (defun method-process (method-name method-spec)
-  (princ "Processing the method")
   (setf (fdefinition method-name) 
 	(lambda (this &rest args)
 	  (apply (get-slot this 
 			   method-name)
 		 (append (list this)
 			 args))))	
-  (princ "  Function Created, Now Rewriting!!!")
   (eval (rewrite-method method-spec)))
 
 
