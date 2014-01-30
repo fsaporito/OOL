@@ -107,10 +107,9 @@
 ;;;; Rewrite Method 
 ;;;; This Function Add The Argument This To The Method
 (defun rewrite-method (method-spec)
-  (princ "Now In Rewriting")
-  (list 'lamba (append (list 'this)
+   (list 'lambda (append (list 'this)
 		       (second method-spec))
-	(list 'progn (rest (rest method-spec)))))
+	(cons 'progn (rest (rest method-spec)))))
 
 
 
@@ -122,13 +121,12 @@
   (princ "Processing the method")
   (setf (fdefinition method-name) 
 	(lambda (this &rest args)
-	  (apply (get-slot 'this 
+	  (apply (get-slot this 
 			   method-name)
-		 (append (list 'this)
+		 (append (list this)
 			 args))))	
   (princ "  Function Created, Now Rewriting!!!")
-  (eval (rewrite-method method-spec))
-  (princ "done"))
+  (eval (rewrite-method method-spec)))
 
 
 
