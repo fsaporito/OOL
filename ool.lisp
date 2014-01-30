@@ -25,7 +25,7 @@
 ;;;; Function Used To Process Methods, Rewriting Them To
 ;;;; Lisp Functions 
 (defun method-process (method-name method-spec)
-	(error "Not Implemented Yet"))
+  (error "Not Implemented Yet"))
 	
 	
 
@@ -35,8 +35,8 @@
       T
       (if (symbolp (first slot-values)) ;; The First Element Must Be A Symbol
 	  (if (equal (car (second slot-values)) (quote method))
-	      ((method-process (first slot-values) (second slot-values))
-	       (check-slot (rest (rest slot-values))))
+	      (and (method-process (first slot-values) (second slot-values))
+		   (check-slot (rest (rest slot-values))))
 	      (check-slot (rest (rest slot-values)))) ;; Check From Third Element
 	  Nil)))
 
