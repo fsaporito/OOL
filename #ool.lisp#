@@ -27,6 +27,10 @@
 (defun method-process (method-name method-spec)
   (setf (fdefinition method-name) (lambda (first method-spec) (second method-spec)))
   (eval (rewrite-method-code method-name  method-spec)))
+
+
+(defun rewrite-method-code (method-name method-spec)
+  (
 	
 	
 
