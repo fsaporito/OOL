@@ -46,9 +46,9 @@
 
 
 ;;;; Methods Calling
-;(talk *eve*)
+(talk *eve*)
 
-;(talk *adam*)
+(talk *adam*)
 			
 
 	      
