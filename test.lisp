@@ -17,9 +17,8 @@
 	  (princ (get-slot this 'name))
 	  (terpri)
 	  (princ "My age is ")
-	  (princ (get-slot this 'age)))
-
-)
+	  (princ (get-slot this 'age))
+	  (terpri)))
 
 
 ;;;; Istances Of Class Person
@@ -46,9 +45,9 @@
 
 
 ;;;; Methods Calling
-(talk *eve*)
+(talk *s1*)
 
-(talk *adam*)
+(talk *s2*)
 			
 
 	      
