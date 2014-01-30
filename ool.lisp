@@ -83,10 +83,8 @@
 (defun check-slot (slot-values)
   (if (null slot-values) ;; slot-values Is Empty, Return True
       T
-      (if (evenp (length slot-values))
-	  (if (symbolp (first slot-values)) ;; The First Element Must Be A Symbol
-	      (check-slot (rest (rest slot-values))) ;; Check From Third Element
-	      Nil)
+      (if (symbolp (first slot-values)) ;; The First Element Must Be A Symbol
+	  (check-slot (rest (rest slot-values))) ;; Check From Third Element
 	  Nil)))
 
 
@@ -96,7 +94,9 @@
   (if (symbolp name) ;; Name Must Be A Symbol
       (if (symbolp parent) ;; Parent Must Be A Symbol
 	  (if (not (atom slot-values)) ;; Slot Values Must Be A List
-	      (check-slot slot-values)
+	       (if (evenp (length slot-values))
+		   (check-slot slot-values)
+		   Nil)
 	      Nil)
 	  Nil)
       Nil))
@@ -133,12 +133,16 @@
 (defun slot-values-proc (slot-values)
   (if (null slot-values)
       Nil
-      (if (equal (car (second slot-values)) 
-		 'method)
-	  (append (method-process (first slot-values) 
-				  (second slot-values))
-		  (slot-values-proc (rest (rest slot-values))))
-	  (append (list (first slot-values) 
+      (if (not (atom (second slot-values)))
+	  (if (equal (car (second slot-values)) 
+		     'method)
+	      (append (method-process (first slot-values) 
+				      (second slot-values))
+		      (slot-values-proc (rest (rest slot-values))))
+	      (append (list (first slot-values) 
+			    (second slot-values))
+		      (slot-values-proc (rest (rest slot-values)))))
+	  (append (list (first slot-values)
 			(second slot-values))
 		  (slot-values-proc (rest (rest slot-values)))))))
 

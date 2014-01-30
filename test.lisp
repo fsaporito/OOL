@@ -12,13 +12,14 @@
 (define-class 'student 'person 
   'name "Eva Lu Ator"
   'university "Berkeley"
-; 'talk '(method ()
+;  'talk '(method ()
 ;	  (princ "My name is ")
 ;	  (princ (get-slot this 'name))
 ;	  (terpri)
 ;	  (princ "My age is ")
 ;	  (princ (get-slot this 'age)))
-  )
+
+)
 
 
 ;;;; Istances Of Class Person
@@ -31,21 +32,23 @@
 			'name "Eduardo De Filippo"
 			'age 108))
 
-(defparameter *s2* (new 'student))
+(defparameter *s2* (new 'student 'adress "MyHome"))
 
 
 ;;;; Istances Ispection
-(get-slot eve 'age)
+(get-slot *eve* 'age)
 
-(get-slot s2 'name)
+(get-slot *adam* 'name)
 
-(get-slot eve 'adress)
+(get-slot *s1* 'name)
+
+(get-slot *s2* 'adress)
 
 
 ;;;; Methods Calling
-;(talk eve)
+;(talk *eve*)
 
-;(talk adam)
+;(talk *adam*)
 			
 
 	      
