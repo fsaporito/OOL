@@ -1,4 +1,4 @@
-;;; Surname Name ID
+;;;; OOL
 
 
 ;;;; Hash Table Used To Store Classes Informations
@@ -69,8 +69,8 @@
 	    (if (not (null class-sp)) ;; Class Defined
 		(if (not (null (find-slot (rest class-sp) ;; Look Into The 
 					  slot-name))) ;; The Class
-		    (cdr (find-slot (rest class-sp) ;; Slot Value Found, Return It
-				    slot-name))
+		    (cdr (find-slot (rest class-sp) ;; Slot Value Found 
+				    slot-name))     ;; Return It
 		    (let ((slot-par (find-slot-p (first class-sp) slot-name)))
 		      (if (not (null slot-par)) ;; Look Into Parent Class 
 			  (cdr slot-par)  ;; Slot Value Found, Return It
@@ -109,9 +109,9 @@
 ;;;; Rewrite Method 
 ;;;; This Function Add The Argument This To The Method
 (defun rewrite-method (method-spec)
-   (list 'lambda (append (list 'this)
+   (list 'lambda (append (list 'this) ;; Add The THIS Argument
 		       (second method-spec))
-	(cons 'progn (rest (rest method-spec)))))
+	(cons 'progn (rest (rest method-spec))))) ;; Eval All The Method's Body
 
 
 
@@ -120,13 +120,13 @@
 ;;;; Function Used To Process Methods, Rewriting Them To
 ;;;; Lisp Functions 
 (defun method-process (method-name method-spec)
-  (setf (fdefinition method-name) 
-	(lambda (this &rest args)
+  (setf (fdefinition method-name) ;; Associate The Lambda To The Method's Name
+	(lambda (this &rest args) ;; Adds The THIS Argument
 	  (apply (get-slot this 
 			   method-name)
 		 (append (list this)
 			 args))))	
-  (eval (rewrite-method method-spec)))
+  (eval (rewrite-method method-spec))) ;; Returned Value
 
 
 
@@ -135,16 +135,16 @@
 ;;;; Modify The Slot-Values By Processing All The Methods
 (defun slot-values-proc (slot-values)
   (if (null slot-values)
-      ()
-      (if (and (not (atom (second slot-values)))
+      () ;; Return The Slot-Values
+      (if (and (not (atom (second slot-values))) ;; Looks For Methods
 	       (equal (car (second slot-values)) 
 		     'method))
-	  (append (list (first slot-values))
+	  (append (list (first slot-values)) ;; Substitute With Processed Method
 		  (list (method-process (first slot-values) 
 					(second slot-values)))
 		  (slot-values-proc (rest (rest slot-values))))
-	  (append (list (first slot-values) 
-			(second slot-values))
+	  (append (list (first slot-values) ;; Simply Copy The Slot-Name And
+			(second slot-values)) ;; SLot Value
 		  (slot-values-proc (rest (rest slot-values)))))))
 	  
 
