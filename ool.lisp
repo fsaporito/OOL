@@ -7,8 +7,11 @@
 
 
 ;;;; Function Used To Insert The class-spec To The  Hash Table
+;;;; Return The Class Name
 (defun add-class-spec (name class-spec)
-  (setf (gethash name *classes-specs*) class-spec))
+  (setf (gethash name *classes-specs*) ;; Links The Class Name With The Class
+	class-spec)                    ;; Definition And Puts Them In The Table
+  (car (list name))) ;; Returns The Class Name
 
 
 
@@ -40,13 +43,12 @@
 ;;;; In The Parents. Nil If Not Found
 (defun find-slot-p (parent slot-name)
   (if (not (null parent)) ;; Parent  Mustn't Be Nil
-      (if (not (null (get-class-spec parent)))
-	  (if (not (null (find-slot (get-class-spec parent) 
-				    slot-name)))
-	      (find-slot (get-class-spec parent) 
-			 slot-name)
-	      (find-slot-p (first (get-class-spec parent)) 
-			   slot-name))
+      (if (not (null (get-class-spec parent))) ;; Parent Class Must Be Defined
+	  (let ((p-spec (find-slot (get-class-spec parent) slot-name)))
+	    (if (not (null p-spec)) ;; Slot Musn't Be Null
+		p-spec
+		(find-slot-p (first (get-class-spec parent)) ;; Try Looking In The
+			     slot-name)))                    ;; Grandparent
 	  Nil)
       Nil))
       
@@ -56,20 +58,20 @@
 
 ;;;; Get Slot
 (defun get-slot (instance slot-name)
-  (if (and (not (null instance)) 
-	   (symbolp slot-name))
-      (if (not (null (find-slot (rest instance) 
-				slot-name))) 
-	  (find-slot (rest instance) 
+  (if (and (not (null instance)) ;; Instance Mustn't Be Null
+	   (symbolp slot-name)) ;; slot-name Must Be A Symbol
+      (if (not (null (find-slot (rest instance) ;; Check If The Associated 
+				slot-name)))    ;; slot-values Isn't Null
+	  (find-slot (rest instance) ;; Return The Found slot-value
 		     slot-name)
 	  (let ((class-sp (get-class-spec (first instance))))
-	    (if (not (null class-sp))
-		(if (not (null (find-slot (rest class-sp) 
-					  slot-name)))
-		    (find-slot (rest class-sp) 
+	    (if (not (null class-sp)) ;; Class Defined
+		(if (not (null (find-slot (rest class-p) ;; Look Into The 
+					  slot-name))) ;; The Class
+		    (find-slot (rest class-sp) ;; Slot Value Found, Return It
 			       slot-name)
-		    (if (not (null (find-slot-p (first class-sp) 
-						slot-name)))
+		    (if (not (null (find-slot-p (first class-sp) ;; Look Into
+						slot-name)))     ;; Parent 
 			(find-slot-p (first class-sp) 
 				     slot-name)
 			(error "Slot Not Found")))
@@ -133,7 +135,7 @@
 ;;;; Modify The Slot-Values By Processing All The Methods
 (defun slot-values-proc (slot-values)
   (if (null slot-values)
-      Nil
+      ()
       (if (and (not (atom (second slot-values)))
 	       (equal (car (second slot-values)) 
 		     'method))
@@ -153,12 +155,14 @@
 (defun define-class (class-name parent &rest slot-values)
   (if (input-class-check class-name parent slot-values)  
       (if (not (get-class-spec class-name)) ;; Check If Class Is Already Defined
-	  (if (null parent) ;; Parent Class If Exists Must Be Defined
-	      (add-class-spec class-name (append (list parent) 
-						 (slot-values-proc slot-values)))
-	      (if (not (null (get-class-spec parent)))
-		  (add-class-spec class-name (append (list parent) 
-						     (slot-values-proc slot-values)))
+	  (if (null parent) ;; Check If Orphan
+	      (add-class-spec class-name ;; Add List To Hash Table 
+			      (append (list parent) 
+				      (slot-values-proc slot-values)))
+	      (if (not (null (get-class-spec parent))) ;; Parent Class Defined
+		  (add-class-spec class-name ;; Add List To Hash Table
+				  (append (list parent) 
+					  (slot-values-proc slot-values)))
 		  (error "Parent Class Not Defined !!!")))
 	(error "Class Already Defined !!!"))
       (error "Wrong Input!!!")))
@@ -168,23 +172,14 @@
 ;;;; New 
 ;;;; Instantiate A New Class Previously Defined
 (defun new (class-name &rest slot-values)
-  (if (symbolp class-name) 
-      (if (get-class-spec class-name)
-	  (if (evenp (length slot-values))
-	      (if (check-slot slot-values)
-		  (append (list class-name) 
-			  (slot-values-proc slot-values))
+  (if (symbolp class-name) ;; Class Name Must Be A Symbol
+      (if (get-class-spec class-name) ;; The Class Must Be Defined
+	  (if (evenp (length slot-values)) ;; NUmber Or Arguments Must Be Even
+	      (if (check-slot slot-values) ;; Arguments Are Valid
+		  (append (list class-name) ;; Create List With Name And
+			  (slot-values-proc slot-values)) ;; Processed Slot
 		  (error "Wrong Slot Values"))
 	      (error "Wrong Slot Values"))
 	  (error "Class Not Defined !!!"))
-      (error "Wrong Class Name")))
-      
-
-
-
-
-
-
-
- 
+      (error "Wrong Class Name"))) 
 		  
