@@ -44,12 +44,12 @@
 (defun find-slot-p (parent slot-name)
   (if (not (null parent)) ;; Parent  Mustn't Be Nil
       (if (not (null (get-class-spec parent))) ;; Parent Class Must Be Defined
-	  (let ((slot (find-slot (get-class-spec parent) slot-name)))
-	    (if (not (null p-spec)) ;; Slot Musn't Be Null
-		slot ;; Return Slot Value
-		(find-slot-p (first (get-class-spec parent)) ;; Try Looking In The
-			     slot-name)))                    ;; Grandparent
-	  Nil)
+	(let ((slot (find-slot (rest (get-class-spec parent)) slot-name)))
+	  (if (not (null slot)) ;; Slot Musn't Be Null
+	      slot ;; Return Slot Value
+	      (find-slot-p (first (get-class-spec parent)) ;; Try Looking In The
+			   slot-name)))                    ;; Grandparent
+	Nil)
       Nil))
       
 

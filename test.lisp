@@ -21,6 +21,10 @@
 	  (terpri)))
 
 
+;;;; Definition Of A Class Pdh, Subclass Of Student
+(define-class 'phd 'student 'subject "ComputerScience")
+
+
 ;;;; Istances Of Class Person
 (defparameter *eve* (new 'person))
 (defparameter *adam* (new 'person 'name "Adam"))
@@ -31,7 +35,11 @@
 			'name "Eduardo De Filippo"
 			'age 108))
 
-(defparameter *s2* (new 'student 'adress "MyHome"))
+(defparameter *s2* (new 'student 'adress "My Home"))
+
+
+;;;; Instance Of Class Phd
+(defparameter *me* (new 'phd 'name "Ernest" 'age "24"))
 
 
 ;;;; Istances Ispection
@@ -62,6 +70,15 @@
 (talk *s2*)
 (terpri)
 (terpri)
+
+(princ "talk Me")
+(terpri)
+(talk *me*)
+(terpri)
+(terpri)
+
+
+
 			
 
 	      
