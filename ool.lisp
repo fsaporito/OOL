@@ -44,9 +44,9 @@
 (defun find-slot-p (parent slot-name)
   (if (not (null parent)) ;; Parent  Mustn't Be Nil
       (if (not (null (get-class-spec parent))) ;; Parent Class Must Be Defined
-	  (let ((p-spec (find-slot (get-class-spec parent) slot-name)))
+	  (let ((slot (find-slot (get-class-spec parent) slot-name)))
 	    (if (not (null p-spec)) ;; Slot Musn't Be Null
-		p-spec
+		slot ;; Return Slot Value
 		(find-slot-p (first (get-class-spec parent)) ;; Try Looking In The
 			     slot-name)))                    ;; Grandparent
 	  Nil)
@@ -66,15 +66,14 @@
 		     slot-name)
 	  (let ((class-sp (get-class-spec (first instance))))
 	    (if (not (null class-sp)) ;; Class Defined
-		(if (not (null (find-slot (rest class-p) ;; Look Into The 
+		(if (not (null (find-slot (rest class-sp) ;; Look Into The 
 					  slot-name))) ;; The Class
 		    (find-slot (rest class-sp) ;; Slot Value Found, Return It
 			       slot-name)
-		    (if (not (null (find-slot-p (first class-sp) ;; Look Into
-						slot-name)))     ;; Parent 
-			(find-slot-p (first class-sp) 
-				     slot-name)
-			(error "Slot Not Found")))
+		    (let ((slot-par (find-slot-p (first class-sp) slot-name)))
+		      (if (not (null slot-par)) ;; Look Into Parent Class 
+			  slot-par  ;; Slot Value Found, Return It
+			  (error "Slot Not Found"))))
 		(error "Slot Not Found"))))
       (error "Wrong Input")))
 

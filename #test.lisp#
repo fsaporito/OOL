@@ -31,7 +31,7 @@
 			'name "Eduardo De Filippo"
 			'age 108))
 
-(defparameter *s2* (new 'student 'adress "MyHome"))
+(defparameter *s2* (new 'student 'adress "My Home"))
 
 
 ;;;; Istances Ispection
