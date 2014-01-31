@@ -31,7 +31,7 @@
   (if (not (null list-arg)) ;; Instance Mustn't Be Nil
       (if (equal (first list-arg) 
 		 slot-name) ;; Slot Found
-	  (cons slot-name ;; Return (list slot-name slot-value)
+	  (cons slot-name ;; Return (slot-name . slot-value)
 		(second list-arg)) 
 	  (find-slot (rest (rest list-arg)) slot-name)) ;; Recursive Step
       Nil))
