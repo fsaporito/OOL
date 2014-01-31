@@ -31,7 +31,8 @@
   (if (not (null list-arg)) ;; Instance Mustn't Be Nil
       (if (equal (first list-arg) 
 		 slot-name) ;; Slot Found
-	  (second list-arg) ;; Return Slot-Value
+	  (cons slot-name ;; Return (list slot-name slot-value)
+		(second list-arg)) 
 	  (find-slot (rest (rest list-arg)) slot-name)) ;; Recursive Step
       Nil))
       
@@ -44,9 +45,9 @@
 (defun find-slot-p (parent slot-name)
   (if (not (null parent)) ;; Parent  Mustn't Be Nil
       (if (not (null (get-class-spec parent))) ;; Parent Class Must Be Defined
-	(let ((slot (find-slot (rest (get-class-spec parent)) slot-name)))
-	  (if (not (null slot)) ;; Slot Musn't Be Null
-	      slot ;; Return Slot Value
+	(let ((slotl (find-slot (rest (get-class-spec parent)) slot-name)))
+	  (if (not (null slotl)) ;; Slot Musn't Be Null
+	      slotl ;; Return Slot Value
 	      (find-slot-p (first (get-class-spec parent)) ;; Try Looking In The
 			   slot-name)))                    ;; Grandparent
 	Nil)
@@ -62,17 +63,17 @@
 	   (symbolp slot-name)) ;; slot-name Must Be A Symbol
       (if (not (null (find-slot (rest instance) ;; Check If The Associated 
 				slot-name)))    ;; slot-values Isn't Null
-	  (find-slot (rest instance) ;; Return The Found slot-value
-		     slot-name)
+	  (cdr (find-slot (rest instance) ;; Return The Found slot-value
+			  slot-name))
 	  (let ((class-sp (get-class-spec (first instance))))
 	    (if (not (null class-sp)) ;; Class Defined
 		(if (not (null (find-slot (rest class-sp) ;; Look Into The 
 					  slot-name))) ;; The Class
-		    (find-slot (rest class-sp) ;; Slot Value Found, Return It
-			       slot-name)
+		    (cdr (find-slot (rest class-sp) ;; Slot Value Found, Return It
+				    slot-name))
 		    (let ((slot-par (find-slot-p (first class-sp) slot-name)))
 		      (if (not (null slot-par)) ;; Look Into Parent Class 
-			  slot-par  ;; Slot Value Found, Return It
+			  (cdr slot-par)  ;; Slot Value Found, Return It
 			  (error "Slot Not Found"))))
 		(error "Slot Not Found"))))
       (error "Wrong Input")))
